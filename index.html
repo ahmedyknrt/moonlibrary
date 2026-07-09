@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -282,7 +281,7 @@ function loadSwf(src, title) {
 function loadIso(src, core, title) {
   const frame = clearFrame();
 
-  // Create clean isolated sandbox iframe
+  // Create standard isolated iframe sandbox
   const iframe = document.createElement("iframe");
   iframe.style.width = "100%";
   iframe.style.height = "100%";
@@ -293,20 +292,18 @@ function loadIso(src, core, title) {
 
   const doc = iframe.contentWindow.document;
   doc.open();
-  
-  // Base setup 
   doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
   doc.close();
 
-  // Assign data parameters via direct DOM assignment inside the frame environment
+  // CHANGED: Configured parameters to pull directly from the stable official server infrastructure instead of jsdelivr strings
   iframe.contentWindow.EJS_player = '#ejs-target';
   iframe.contentWindow.EJS_core = core;
   iframe.contentWindow.EJS_gameUrl = src;
-  iframe.contentWindow.EJS_pathtodata = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/';
+  iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  iframe.contentWindow.EJS_startOnLoaded = true; // Auto-boots engine when file loading finishes
 
-  // Inject EmulatorJS loader script safely without string template characters breaking it
   const scr = doc.createElement('script');
-  scr.src = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js';
+  scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
   doc.body.appendChild(scr);
 
   document.getElementById("np-hint").textContent = "large file — first load may take a bit ♡";
@@ -343,5 +340,3 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
-
-```
