@@ -265,60 +265,42 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
 </div>
 
 <script>
-window.RufflePlayer = window.RufflePlayer || {};
-
-let currentRufflePlayer = null;
-
-function clearFrame() {
-  const frame = document.getElementById("game-frame");
-  frame.innerHTML = "";
-
-  // Tear down any previous EmulatorJS instance/globals so it doesn't
-  // try to double-init or hang onto the old game.
-  window.EJS_player = undefined;
-  window.EJS_core = undefined;
-  window.EJS_gameUrl = undefined;
-  const oldLoader = document.getElementById("ejs-loader-script");
-  if (oldLoader) oldLoader.remove();
-
-  currentRufflePlayer = null;
-  return frame;
-}
-
-function loadSwf(src, title) {
-  const frame = clearFrame();
-
-  const ruffle = window.RufflePlayer.newest();
-  if (!ruffle) {
-    frame.innerHTML = '<div class="placeholder">ruffle failed to load — check your connection</div>';
-    return;
-  }
-
-  currentRufflePlayer = ruffle.createPlayer();
-  frame.appendChild(currentRufflePlayer);
-  currentRufflePlayer.load(src);
-
-  document.getElementById("np-hint").textContent = "";
-}
-
 function loadIso(src, core, title) {
   const frame = clearFrame();
 
-  // EmulatorJS builds its own player inside a div we give it via EJS_player,
-  // and it reads its config from these globals when loader.js runs.
-  const target = document.createElement("div");
-  target.id = "ejs-target";
-  frame.appendChild(target);
+  // Create an isolated iframe to bypass the DOMContentLoaded bug
+  const iframe = document.createElement("iframe");
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.border = "none";
+  iframe.setAttribute("allowfullscreen", "true"); // Enables fullscreen gameplay
 
-  window.EJS_player = "#ejs-target";
-  window.EJS_core = core;
-  window.EJS_gameUrl = src;
-  window.EJS_pathtodata = "https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/";
+  frame.appendChild(iframe);
 
-  const loader = document.createElement("script");
-  loader.id = "ejs-loader-script";
-  loader.src = "https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js";
-  document.body.appendChild(loader);
+  // Safely write the EmulatorJS setup directly inside the iframe
+  const iframeDoc = iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        html, body, #ejs-target { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #111; }
+      </style>
+    </head>
+    <body>
+      <div id="ejs-target"></div>
+      <script>
+        window.EJS_player = '#ejs-target';
+        window.EJS_core = '${core}';
+        window.EJS_gameUrl = '${src}';
+        window.EJS_pathtodata = 'https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/';
+      <\/script>
+      <script src="https://cdn.jsdelivr.net/npm/emulatorjs@latest/data/loader.js"></script>
+    </body>
+    </html>
+  `);
+  iframeDoc.close();
 
   document.getElementById("np-hint").textContent = "large file — first load may take a bit ♡";
 }
@@ -347,7 +329,6 @@ window.addEventListener("load", () => {
     });
   });
 
-  // auto-load the first game on page load
   const first = document.querySelector(".game-link");
   if (first) loadGame(first);
 });
