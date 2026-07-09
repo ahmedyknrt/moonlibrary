@@ -217,7 +217,7 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
             <div id="heading">❀ flash games</div>
             <div id="sidebox">
               <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="swf" data-title="50's fashion dress up" data-src="dressup.swf">dice mogul</a>
+                <a class="game-link" data-type="swf" data-title="50's Fashion Dress Up" data-src="dressup.swf">50's fashion dress up</a>
               </div>
             </div>
             <div id="sidebox">
@@ -279,14 +279,16 @@ function loadSwf(src, title) {
 function loadIso(src, core, title) {
   const frame = clearFrame();
 
-  // Resolve to an absolute URL using the parent page as the base,
-  // so the iframe (which has no real URL of its own) can actually fetch it.
+  // Resolve to an absolute URL using the parent page as the base, so the
+  // iframe (which has no real URL of its own, since its document is built
+  // with document.write) can actually find and fetch the game file.
   const absoluteSrc = new URL(src, document.baseURI).href;
 
   const iframe = document.createElement("iframe");
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
+
   iframe.setAttribute("allowfullscreen", "true");
   iframe.setAttribute("allow", "autoplay; gamepad");
   iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
@@ -300,7 +302,7 @@ function loadIso(src, core, title) {
 
   iframe.contentWindow.EJS_player = '#ejs-target';
   iframe.contentWindow.EJS_core = core;
-  iframe.contentWindow.EJS_gameUrl = absoluteSrc;   // ← use the resolved URL
+  iframe.contentWindow.EJS_gameUrl = absoluteSrc;
   iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   iframe.contentWindow.EJS_startOnLoaded = true;
 
