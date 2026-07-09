@@ -281,12 +281,15 @@ function loadSwf(src, title) {
 function loadIso(src, core, title) {
   const frame = clearFrame();
 
-  // Create standard isolated iframe sandbox
   const iframe = document.createElement("iframe");
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
+  
+  // Security clearance setup allowing cross-origin redirects from Archive.org
   iframe.setAttribute("allowfullscreen", "true");
+  iframe.setAttribute("allow", "autoplay; gamepad");
+  iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
 
   frame.appendChild(iframe);
 
@@ -295,12 +298,11 @@ function loadIso(src, core, title) {
   doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
   doc.close();
 
-  // CHANGED: Configured parameters to pull directly from the stable official server infrastructure instead of jsdelivr strings
   iframe.contentWindow.EJS_player = '#ejs-target';
   iframe.contentWindow.EJS_core = core;
   iframe.contentWindow.EJS_gameUrl = src;
   iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-  iframe.contentWindow.EJS_startOnLoaded = true; // Auto-boots engine when file loading finishes
+  iframe.contentWindow.EJS_startOnLoaded = true; 
 
   const scr = doc.createElement('script');
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
