@@ -291,6 +291,9 @@ function loadIso(src, core, title) {
 
   frame.appendChild(iframe);
 
+  // FIX: Force conversion of the relative source filename into an explicit full web URL address 
+  const absoluteGameUrl = new URL(src, window.location.href).href;
+
   const doc = iframe.contentWindow.document;
   doc.open();
   doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
@@ -298,7 +301,7 @@ function loadIso(src, core, title) {
 
   iframe.contentWindow.EJS_player = '#ejs-target';
   iframe.contentWindow.EJS_core = core;
-  iframe.contentWindow.EJS_gameUrl = src;
+  iframe.contentWindow.EJS_gameUrl = absoluteGameUrl; // Feeds the full verifiable network URL string
   iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   iframe.contentWindow.EJS_startOnLoaded = true; 
 
@@ -306,7 +309,7 @@ function loadIso(src, core, title) {
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
   doc.body.appendChild(scr);
 
-  document.getElementById("np-hint").textContent = "loading rom file into browser engine... ♡";
+  document.getElementById("np-hint").textContent = "downloading rom file into browser engine... ♡";
 }
 
 function loadGame(link) {
@@ -333,7 +336,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Automatically start with the first game on list creation
   const first = document.querySelector(".game-link");
   if (first) loadGame(first);
 });
