@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>˚ʚ♡ɞ˚ our arcade</title>
 
+<!-- Ruffle (Flash emulator, for .swf games) -->
 <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 
 <style>
@@ -222,20 +223,19 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
             </div>
             <div id="sidebox">
               <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="swf" data-title="Game Two" data-src="game2.swf">game two — rename me</a>
+                <a class="game-link" data-type="swf" data-title="Game Two" data-src="game2.swf">game two</a>
               </div>
             </div>
 
             <div id="heading">❀ disc games</div>
             <div id="sidebox">
               <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="iso" data-core="nds" data-title="Barbie Riding Camp (NDS)" data-src="Barbie.nds">Barbie Horse Adventures (3D)</a>
+                <a class="game-link" data-type="iso" data-core="nds" data-title="Barbie 12 Dancing Princesses" data-src="barbie12.nds">Barbie 12 Princesses (3D)</a>
               </div>
             </div>
             <div id="sidebox">
               <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="iso" data-core="gba" data-title="GBA Game — rename me"
-                   data-src="Barbie - The Princess and the Pauper.gba">gba game — rename me</a>
+                <a class="game-link" data-type="iso" data-core="gba" data-title="Barbie Princess & Pauper" data-src="barbie_pauper.gba">Barbie Pauper (GBA)</a>
               </div>
             </div>
 
@@ -285,7 +285,6 @@ function loadIso(src, core, title) {
   iframe.style.height = "100%";
   iframe.style.border = "none";
   
-  // Security clearance setup allowing cross-origin redirects from Archive.org
   iframe.setAttribute("allowfullscreen", "true");
   iframe.setAttribute("allow", "autoplay; gamepad");
   iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
@@ -307,7 +306,7 @@ function loadIso(src, core, title) {
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
   doc.body.appendChild(scr);
 
-  document.getElementById("np-hint").textContent = "large file — first load may take a bit ♡";
+  document.getElementById("np-hint").textContent = "loading rom file into browser engine... ♡";
 }
 
 function loadGame(link) {
@@ -334,6 +333,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Automatically start with the first game on list creation
   const first = document.querySelector(".game-link");
   if (first) loadGame(first);
 });
