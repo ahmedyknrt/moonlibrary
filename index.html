@@ -1,45 +1,281 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Our Arcade</title>
-    <!-- 1. CORRECTED CDN LINK: This pulls the actual Ruffle software -->
-   <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-    
-    <style>
-        /* 2. ADDED STYLING: This prevents the game from rendering as a microscopic 0x0 invisible box */
-        #game-container {
-            width: 100%;
-            height: 600px;
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #111; /* Dark background placeholder while loading */
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>˚ʚ♡ɞ˚ our arcade</title>
+
+<!-- Ruffle (Flash emulator) -->
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+<style>
+html{
+  image-rendering: pixelated;
+  filter: contrast(80%);
+  background: url(https://i.pinimg.com/736x/df/cb/f6/dfcbf62db587f25f91ca5d811ff88153.jpg);
+  background-size: 10%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  width: 800px;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  line-height: 16px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  font-family: "ms pgothic", sans-serif;
+  color: #ae957f;
+  text-align: justify;
+  background: transparent;
+}
+
+::-webkit-scrollbar { display: none; }
+.scrollbar{ scrollbar-width: none; -ms-overflow-style: none; }
+
+a{ color: #c49dae; text-decoration: none; }
+a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
+
+.outerlace{
+  border-width: 5px;
+  border-style: solid;
+  border-image: url("https://i.imgur.com/8xftJ3v.gif") 7 fill round;
+}
+
+.container{
+  border: #ae957f 1px dotted;
+  padding: 8px;
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/dot/02.png);
+  background-size: 4%;
+}
+
+.header{
+  padding: 4px;
+  border: #ae957f 1px dotted;
+  border-bottom: hidden;
+  background: white;
+}
+
+#headerimg{
+  border: #ae957f 1px dotted;
+  background: url(https://i.pinimg.com/1200x/4f/83/4a/4f834ae4f237bb0c3eb2c482aca35fd1.jpg);
+  background-size: 100%;
+  height: 75px;
+  display: flex;
+  align-items: center;
+}
+#headerimg p{
+  font-size: 32px;
+  letter-spacing: 2px;
+  color: beige;
+  -webkit-text-stroke: #ae957f 2px;
+  paint-order: stroke;
+  margin-left: 12px;
+  font-weight: bold;
+}
+
+.innerbody{ display: flex; flex-direction: row; }
+
+.content{
+  width: 575px;
+  border: #ae957f 1px dashed;
+  border-top: hidden;
+  background: white;
+  padding: 8px;
+}
+
+.sidebar{
+  width: 270px;
+  padding: 8px;
+  border-right: #ae957f 1px dotted;
+  border-bottom: #ae957f 1px dotted;
+  background: white;
+  padding-top: 12px;
+}
+
+#heading{
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/plaid/10.png);
+  -webkit-text-stroke: white 5px;
+  paint-order: stroke;
+  font-weight: bold;
+  padding: 4px;
+  border: #ae957f 1px dotted;
+  border-left: hidden;
+  border-right: hidden;
+}
+
+/* ── game player ── */
+.playerbox{
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/stripe/02.png);
+  background-size: 15%;
+  border: #ae957f 1px dotted;
+  padding: 4px;
+}
+#game-frame{
+  border: #ae957f 1px dotted;
+  background: #111;
+  width: 100%;
+  height: 340px;
+  position: relative;
+  overflow: hidden;
+}
+#game-frame ruffle-player{ width: 100% !important; height: 100% !important; }
+#game-frame .placeholder{
+  color: #ccc;
+  font-size: 12px;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+#now-playing{
+  background: white;
+  border: #ae957f 1px dotted;
+  padding: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+#now-playing strong{ letter-spacing: 1px; }
+
+/* ── sidebar game list ── */
+#sidecontent{
+  width: 95%;
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/stripe/02.png);
+  background-size: 30%;
+  border: #ae957f 1px dotted;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+#sideboxtext{ margin-left: 16px; }
+#sidecontent a{ color: #ae957f; }
+#sidebox{
+  background: white;
+  border: #ae957f 1px dotted;
+  border-top: hidden;
+  padding: 4px;
+}
+.game-link{
+  cursor: pointer;
+}
+.game-link.active{
+  color: #a1ceed;
+  font-weight: bold;
+}
+
+#footer{
+  text-align: center;
+  padding: 8px;
+  border: #ae957f 1px dotted;
+  border-top: hidden;
+  background: white;
+  font-size: 10px;
+}
+
+/* Happy Jumping Cinnamoroll cursor */
+</style>
+<link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/happy-cinnamoroll-eea44ff2-32.css">
 </head>
 <body>
-    <h1 style="text-align: center;">Happy Gaming!</h1>
-    
-    <!-- Container for the Flash game -->
-    <div id="game-container"></div>
 
-    <script>
-        window.RufflePlayer = window.RufflePlayer || {};
-        window.addEventListener("load", (event) => {
-            const ruffle = window.RufflePlayer.newest();
-            
-            // Check if Ruffle loaded successfully
-            if (!ruffle) {
-                console.error("Ruffle failed to load from the CDN link.");
-                return;
-            }
-            
-            const player = ruffle.createPlayer();
-            const container = document.getElementById("game-container");
-            container.appendChild(player);
-            
-            // Loads your uploaded file
-            player.load("dice.swf"); 
-        });
-    </script>
+<div class="outerlace">
+  <div class="container">
+
+    <div class="header">
+      <div id="headerimg">&ensp;<i><p>Happy Gaming!</p></i></div>
+    </div>
+
+    <div class="innerbody">
+
+      <div class="content">
+        <div class="playerbox">
+          <div id="game-frame">
+            <div class="placeholder">pick a game from the list ♡</div>
+          </div>
+        </div>
+        <div id="now-playing">now playing: <strong id="np-title">nothing yet</strong></div>
+      </div>
+
+      <div class="sidebar">
+        <div class="scrollbar">
+          <div id="sidecontent">
+
+            <div id="heading">❀ board games</div>
+            <div id="sidebox">
+              <div id="sideboxtext">&ensp;
+                <a class="game-link" data-title="bratz" data-src="bratzgirlsbeautysalon.swf">dice mogul</a>
+              </div>
+            </div>
+
+            <div id="heading">❀ arcade classics</div>
+            <div id="sidebox">
+              <div id="sideboxtext">&ensp;
+                <a class="game-link" data-title="Game Two" data-src="game2.swf">game two — rename me</a>
+              </div>
+            </div>
+            <div id="sidebox">
+              <div id="sideboxtext">&ensp;
+                <a class="game-link" data-title="Game Three" data-src="game3.swf">game three — rename me</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="footer">☆ made with love, one game at a time ☆</div>
+
+  </div>
+</div>
+
+<script>
+window.RufflePlayer = window.RufflePlayer || {};
+
+let currentPlayer = null;
+
+function loadGame(src, title) {
+  const frame = document.getElementById("game-frame");
+  frame.innerHTML = ""; // clear placeholder / old player
+
+  const ruffle = window.RufflePlayer.newest();
+  if (!ruffle) {
+    frame.innerHTML = '<div class="placeholder">ruffle failed to load — check your connection</div>';
+    return;
+  }
+
+  currentPlayer = ruffle.createPlayer();
+  frame.appendChild(currentPlayer);
+  currentPlayer.load(src);
+
+  document.getElementById("np-title").textContent = title;
+
+  document.querySelectorAll(".game-link").forEach(el => el.classList.remove("active"));
+  const activeLink = document.querySelector('.game-link[data-src="' + src + '"]');
+  if (activeLink) activeLink.classList.add("active");
+}
+
+window.addEventListener("load", () => {
+  document.querySelectorAll(".game-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      loadGame(link.dataset.src, link.dataset.title);
+    });
+  });
+
+  // auto-load the first game on page load
+  const first = document.querySelector(".game-link");
+  if (first) loadGame(first.dataset.src, first.dataset.title);
+});
+</script>
+
 </body>
 </html>
