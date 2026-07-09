@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Our Arcade</title>
+    <!-- Load the Ruffle emulator script -->
+    <script src="ruffle.js"></script>
+</head>
+<body>
+    <h1>Happy Gaming!</h1>
+    
+    <!-- Container for the Flash game -->
+    <div id="game-container"></div>
+
+    <script>
+
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.addEventListener("load", (event) => {
+            const ruffle = window.RufflePlayer.newest();
+            const player = ruffle.createPlayer();
+            const container = document.getElementById("game-container");
+            container.appendChild(player);
+            
+            // Replace "http://games.mafa.com/3/Baby-Barbie-Little-Pony-2.swf" with your actual game file name
+            player.load("http://games.mafa.com/3/Baby-Barbie-Little-Pony-2.swf"); 
+        });
+    </script>
+	<script src="https://unpkg.com"></script>
+
+</body>
+</html>
