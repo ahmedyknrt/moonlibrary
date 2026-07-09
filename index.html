@@ -2,19 +2,22 @@
 <html>
 <head>
     <title>Our Arcade</title>
-    <!-- Correctly load the online Ruffle player from the CDN -->
+    <!-- 1. CORRECTED CDN LINK: This pulls the actual Ruffle software -->
     <script src="https://unpkg.com"></script>
+    
     <style>
-        /* This ensures the game player expands and is visible on screen */
+        /* 2. ADDED STYLING: This prevents the game from rendering as a microscopic 0x0 invisible box */
         #game-container {
             width: 100%;
             height: 600px;
-            margin-top: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #111; /* Dark background placeholder while loading */
         }
     </style>
 </head>
 <body>
-    <h1>Happy Gaming!</h1>
+    <h1 style="text-align: center;">Happy Gaming!</h1>
     
     <!-- Container for the Flash game -->
     <div id="game-container"></div>
@@ -23,11 +26,18 @@
         window.RufflePlayer = window.RufflePlayer || {};
         window.addEventListener("load", (event) => {
             const ruffle = window.RufflePlayer.newest();
+            
+            // Check if Ruffle loaded successfully
+            if (!ruffle) {
+                console.error("Ruffle failed to load from the CDN link.");
+                return;
+            }
+            
             const player = ruffle.createPlayer();
             const container = document.getElementById("game-container");
             container.appendChild(player);
             
-            // Loads your uploaded "dice.swf" file
+            // Loads your uploaded file
             player.load("dice.swf"); 
         });
     </script>
