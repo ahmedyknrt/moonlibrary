@@ -202,13 +202,9 @@ function loadSwf(src) {
   document.getElementById("np-hint").textContent = "";
 }
 
-// nds/gba/etc via EmulatorJS, which emulates the actual handheld
 function loadIso(src, core) {
   const frame = clearFrame();
 
-  // Resolve to an absolute URL using the parent page as the base, so the
-  // iframe (which has no real URL of its own, since its document is built
-  // with document.write) can actually find and fetch the game file.
   const absoluteSrc = new URL(src, document.baseURI).href;
 
   const iframe = document.createElement("iframe");
@@ -224,11 +220,34 @@ function loadIso(src, core) {
 
   const doc = iframe.contentWindow.document;
   doc.open();
-  doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
+  
+  // Custom styled document inside the iframe to hide white load times
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        html, body, #ejs-target { 
+          margin: 0; 
+          padding: 0; 
+          width: 100%; 
+          height: 100%; 
+          overflow: hidden; 
+          background-color: #fff9f6;
+          background-image: radial-gradient(#ae957f 1px, transparent 1px);
+          background-size: 16px 16px;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="ejs-target"></div>
+    </body>
+    </html>
+  `);
   doc.close();
 
   iframe.contentWindow.EJS_player = '#ejs-target';
-  iframe.contentWindow.EJS_core = core;               // "nds" gives the full dual-screen DS emulator, "gba" the Game Boy Advance one
+  iframe.contentWindow.EJS_core = core;                
   iframe.contentWindow.EJS_gameUrl = absoluteSrc;
   iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   iframe.contentWindow.EJS_startOnLoaded = true;
