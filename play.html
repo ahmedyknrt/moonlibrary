@@ -180,7 +180,9 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
 
 <script>
 window.RufflePlayer = window.RufflePlayer || {};
-
+window.EJS_threads = false;
+window.EJS_disableDatabases = true;
+  
 function clearFrame() {
   const frame = document.getElementById("game-frame");
   frame.innerHTML = "";
@@ -271,7 +273,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   if (type === "iso") {
-    loadIso(src, core || "melonds");
+    loadIso(src, core || "nds");
   } else {
     loadSwf(src);
   }
