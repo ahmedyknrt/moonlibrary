@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>˚ʚ♡ɞ˚ now playing</title>
+
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+<style>
+html{
+  image-rendering: pixelated;
+  filter: contrast(80%);
+  background: url(https://i.pinimg.com/736x/df/cb/f6/dfcbf62db587f25f91ca5d811ff88153.jpg);
+  background-size: 10%;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  width: 800px;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  line-height: 16px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  font-family: "ms pgothic", sans-serif;
+  color: #ae957f;
+  text-align: justify;
+  background: transparent;
+}
+
+::-webkit-scrollbar { display: none; }
+
+a{ color: #c49dae; text-decoration: none; }
+a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
+
+.outerlace{
+  border-width: 5px;
+  border-style: solid;
+  border-image: url("https://i.imgur.com/8xftJ3v.gif") 7 fill round;
+}
+
+.container{
+  border: #ae957f 1px dotted;
+  padding: 8px;
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/dot/02.png);
+  background-size: 4%;
+}
+
+.header{
+  padding: 4px;
+  border: #ae957f 1px dotted;
+  border-bottom: hidden;
+  background: white;
+}
+
+#headerimg{
+  border: #ae957f 1px dotted;
+  background: url(https://i.pinimg.com/1200x/4f/83/4a/4f834ae4f237bb0c3eb2c482aca35fd1.jpg);
+  background-size: 100%;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#headerimg p{
+  font-size: 32px;
+  letter-spacing: 2px;
+  color: beige;
+  -webkit-text-stroke: #ae957f 2px;
+  paint-order: stroke;
+  margin-left: 12px;
+  font-weight: bold;
+}
+#back-link{
+  margin-right: 14px;
+  background: white;
+  border: #ae957f 1px dotted;
+  padding: 3px 8px;
+  font-size: 12px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.content{
+  border: #ae957f 1px dashed;
+  border-top: hidden;
+  background: white;
+  padding: 8px;
+}
+
+.playerbox{
+  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/stripe/02.png);
+  background-size: 15%;
+  border: #ae957f 1px dotted;
+  padding: 4px;
+}
+#game-frame{
+  border: #ae957f 1px dotted;
+  background: #111;
+  width: 100%;
+  height: 480px;
+  position: relative;
+  overflow: hidden;
+}
+#game-frame ruffle-player{ width: 100% !important; height: 100% !important; }
+#game-frame iframe{ display:block; }
+#game-frame .placeholder{
+  color: #ccc;
+  font-size: 12px;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+#game-frame > div{ width: 100%; height: 100%; }
+
+#now-playing{
+  background: white;
+  border: #ae957f 1px dotted;
+  padding: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+}
+#now-playing strong{ letter-spacing: 1px; }
+#now-playing .hint{
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+#footer{
+  text-align: center;
+  padding: 8px;
+  border: #ae957f 1px dotted;
+  border-top: hidden;
+  background: white;
+  font-size: 10px;
+}
+</style>
+<link rel="stylesheet" href="https://cdn.cursors-4u.net/cursors/animated/happy-cinnamoroll-eea44ff2-32.css">
+</head>
+<body>
+
+<div class="outerlace">
+  <div class="container">
+
+    <div class="header">
+      <div id="headerimg">
+        &ensp;<i><p>Happy Gaming!</p></i>
+        <a id="back-link" href="index.html">← back to arcade</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="playerbox">
+        <div id="game-frame">
+          <div class="placeholder">loading...</div>
+        </div>
+      </div>
+      <div id="now-playing">
+        now playing: <strong id="np-title">nothing yet</strong>
+        <span class="hint" id="np-hint"></span>
+      </div>
+    </div>
+
+    <div id="footer">☆ made with love, one game at a time ☆</div>
+
+  </div>
+</div>
+
+<script>
+window.RufflePlayer = window.RufflePlayer || {};
+
+function clearFrame() {
+  const frame = document.getElementById("game-frame");
+  frame.innerHTML = "";
+  return frame;
+}
+
+function loadSwf(src) {
+  const frame = clearFrame();
+
+  const ruffle = window.RufflePlayer.newest();
+  if (!ruffle) {
+    frame.innerHTML = '<div class="placeholder">ruffle failed to load — check your connection</div>';
+    return;
+  }
+
+  const player = ruffle.createPlayer();
+  frame.appendChild(player);
+  player.load(src);
+
+  document.getElementById("np-hint").textContent = "";
+}
+
+// nds/gba/etc via EmulatorJS, which emulates the actual handheld
+function loadIso(src, core) {
+  const frame = clearFrame();
+
+  // Resolve to an absolute URL using the parent page as the base, so the
+  // iframe (which has no real URL of its own, since its document is built
+  // with document.write) can actually find and fetch the game file.
+  const absoluteSrc = new URL(src, document.baseURI).href;
+
+  const iframe = document.createElement("iframe");
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.border = "none";
+
+  iframe.setAttribute("allowfullscreen", "true");
+  iframe.setAttribute("allow", "autoplay; gamepad");
+  iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+
+  frame.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
+  doc.close();
+
+  iframe.contentWindow.EJS_player = '#ejs-target';
+  iframe.contentWindow.EJS_core = core;               // "nds" gives the full dual-screen DS emulator, "gba" the Game Boy Advance one
+  iframe.contentWindow.EJS_gameUrl = absoluteSrc;
+  iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  iframe.contentWindow.EJS_startOnLoaded = true;
+
+  const scr = doc.createElement('script');
+  scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+  doc.body.appendChild(scr);
+
+  document.getElementById("np-hint").textContent = "large file — first load may take a bit, use the on-screen or keyboard controls ♡";
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get("type");
+  const src = params.get("src");
+  const core = params.get("core");
+  const title = params.get("title") || "nothing yet";
+
+  document.getElementById("np-title").textContent = title;
+  document.title = "˚ʚ♡ɞ˚ " + title;
+
+  if (!type || !src) {
+    document.getElementById("game-frame").innerHTML = '<div class="placeholder">pick a game from the arcade ♡</div>';
+    return;
+  }
+
+  if (type === "iso") {
+    loadIso(src, core || "nds");
+  } else {
+    loadSwf(src);
+  }
+});
+</script>
+
+</body>
+</html>
