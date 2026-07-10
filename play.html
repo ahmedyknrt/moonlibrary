@@ -102,16 +102,17 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
 }
 #game-frame{
   border: #ae957f 1px dotted;
-  background: #111;
+  background: #fff9f6;
+  background-image: radial-gradient(#ae957f 1px, transparent 1px);
+  background-size: 16px 16px;
   width: 100%;
   height: 480px;
   position: relative;
   overflow: hidden;
 }
 #game-frame ruffle-player{ width: 100% !important; height: 100% !important; }
-#game-frame iframe{ display:block; }
 #game-frame .placeholder{
-  color: #ccc;
+  color: #ae957f;
   font-size: 12px;
   font-style: italic;
   display: flex;
@@ -120,7 +121,11 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
   height: 100%;
   text-align: center;
 }
-#game-frame > div{ width: 100%; height: 100%; }
+
+/* Custom design integration directly inside EmulatorJS elements */
+#ejs-target, .emulator, #ejs-target canvas {
+  background-color: transparent !important;
+}
 
 #now-playing{
   background: white;
@@ -202,65 +207,30 @@ function loadSwf(src) {
   document.getElementById("np-hint").textContent = "";
 }
 
+// Fixed: Loads the emulator on the main window timeline to fix CORS/WASM security locks
 function loadIso(src, core) {
   const frame = clearFrame();
-
   const absoluteSrc = new URL(src, document.baseURI).href;
 
-  const iframe = document.createElement("iframe");
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.style.border = "none";
+  // Create target div directly inside game-frame
+  const target = document.createElement("div");
+  target.id = "ejs-target";
+  target.style.width = "100%";
+  target.style.height = "100%";
+  frame.appendChild(target);
 
-  iframe.setAttribute("allowfullscreen", "true");
-  iframe.setAttribute("allow", "autoplay; gamepad");
-  iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+  // Set global configurations directly on the top window context
+  window.EJS_player = '#ejs-target';
+  window.EJS_core = core;                
+  window.EJS_gameUrl = absoluteSrc;
+  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  window.EJS_startOnLoaded = true;
+  window.EJS_background = 'transparent';
 
-  frame.appendChild(iframe);
-
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  
-  // FIXED: Forced a transparent/styled canvas background into EmulatorJS's structural hierarchy 
-  doc.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        html, body, #ejs-target, .emulator { 
-          margin: 0; 
-          padding: 0; 
-          width: 100%; 
-          height: 100%; 
-          overflow: hidden; 
-          background-color: #fff9f6 !important;
-          background-image: radial-gradient(#ae957f 1px, transparent 1px) !important;
-          background-size: 16px 16px !important;
-        }
-        canvas {
-          background-color: transparent !important;
-        }
-      </style>
-    </head>
-    <body>
-      <div id="ejs-target"></div>
-    </body>
-    </html>
-  `);
-  doc.close();
-
-  iframe.contentWindow.EJS_player = '#ejs-target';
-  iframe.contentWindow.EJS_core = core;                
-  iframe.contentWindow.EJS_gameUrl = absoluteSrc;
-  iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-  iframe.contentWindow.EJS_startOnLoaded = true;
-  
-  // FIXED: Tells EmulatorJS to explicitly target our background styling rules
-  iframe.contentWindow.EJS_background = 'transparent';
-
-  const scr = doc.createElement('script');
+  // Inject loader script directly into main document
+  const scr = document.createElement('script');
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-  doc.body.appendChild(scr);
+  frame.appendChild(scr);
 
   document.getElementById("np-hint").textContent = "large file — first load may take a bit, use the on-screen or keyboard controls ♡";
 }
