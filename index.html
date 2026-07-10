@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>˚ʚ♡ɞ˚ our arcade</title>
 
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-
 <style>
 html{
   image-rendering: pixelated;
@@ -78,23 +76,11 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
   font-weight: bold;
 }
 
-.innerbody{ display: flex; flex-direction: row; }
-
 .content{
-  width: 575px;
   border: #ae957f 1px dashed;
   border-top: hidden;
   background: white;
-  padding: 8px;
-}
-
-.sidebar{
-  width: 270px;
-  padding: 8px;
-  border-right: #ae957f 1px dotted;
-  border-bottom: #ae957f 1px dotted;
-  background: white;
-  padding-top: 12px;
+  padding: 12px;
 }
 
 #heading{
@@ -104,76 +90,65 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
   font-weight: bold;
   padding: 4px;
   border: #ae957f 1px dotted;
-  border-left: hidden;
-  border-right: hidden;
+  margin-top: 14px;
+  margin-bottom: 8px;
+}
+#heading:first-child{ margin-top: 0; }
+
+/* ── catalog grid ── */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
-/* ── game player ── */
-.playerbox{
+.card{
+  border: #ae957f 1px dotted;
   background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/stripe/02.png);
   background-size: 15%;
-  border: #ae957f 1px dotted;
-  padding: 4px;
+  padding: 5px;
+  display: block;
 }
-#game-frame{
-  border: #ae957f 1px dotted;
-  background: #111;
+
+.card .thumb{
   width: 100%;
-  height: 340px;
-  position: relative;
+  aspect-ratio: 1 / 1;
+  border: #ae957f 1px dotted;
+  background: white;
   overflow: hidden;
-}
-#game-frame ruffle-player{ width: 100% !important; height: 100% !important; }
-#game-frame .placeholder{
-  color: #ccc;
-  font-size: 12px;
-  font-style: italic;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.card .thumb img{
+  width: 100%;
   height: 100%;
-  text-align: center;
+  object-fit: cover;
 }
-#game-frame > div{ width: 100%; height: 100%; }
-
-#now-playing{
-  background: white;
-  border: #ae957f 1px dotted;
-  padding: 8px;
-  margin-top: 4px;
-  font-size: 12px;
-}
-#now-playing strong{ letter-spacing: 1px; }
-#now-playing .hint{
-  display: block;
-  margin-top: 4px;
+.card .thumb .noimg{
   font-size: 10px;
-  opacity: 0.7;
+  color: #ae957f;
+  text-align: center;
+  padding: 4px;
 }
 
-/* ── sidebar game list ── */
-#sidecontent{
-  width: 95%;
-  background: url(https://blueberrymuffinss.neocities.org/media/backgrounds/stripe/02.png);
-  background-size: 30%;
-  border: #ae957f 1px dotted;
-  padding: 4px;
-  margin-bottom: 8px;
-}
-#sideboxtext{ margin-left: 16px; }
-#sidecontent a{ color: #ae957f; }
-#sidebox{
+.card .label{
   background: white;
   border: #ae957f 1px dotted;
   border-top: hidden;
+  margin: 0 -1px;
   padding: 4px;
+  font-size: 12px;
+  text-align: center;
+  color: #ae957f;
 }
-.game-link{
-  cursor: pointer;
-}
-.game-link.active{
-  color: #a1ceed;
-  font-weight: bold;
+.card:hover .label{ color: #a1ceed; }
+.card .tag{
+  display: block;
+  font-size: 9px;
+  opacity: 0.7;
+  margin-top: 2px;
+  letter-spacing: 0;
 }
 
 #footer{
@@ -196,50 +171,44 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
       <div id="headerimg">&ensp;<i><p>Happy Gaming!</p></i></div>
     </div>
 
-    <div class="innerbody">
+    <div class="content">
 
-      <div class="content">
-        <div class="playerbox">
-          <div id="game-frame">
-            <div class="placeholder">pick a game from the list ♡</div>
+      <div id="heading">❀ flash games</div>
+      <div class="grid">
+
+        <a class="card" href="play.html?type=swf&src=dressup.swf&title=50%27s%20Fashion%20Dress%20Up">
+          <div class="thumb">
+            <img src="thumbs/dressup.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'add thumbs/dressup.png ♡'}))">
           </div>
-        </div>
-        <div id="now-playing">
-          now playing: <strong id="np-title">nothing yet</strong>
-          <span class="hint" id="np-hint"></span>
-        </div>
+          <div class="label">50's fashion dress up<span class="tag">flash</span></div>
+        </a>
+
+        <a class="card" href="play.html?type=swf&src=game2.swf&title=Game%20Two">
+          <div class="thumb">
+            <img src="thumbs/game2.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'add thumbs/game2.png ♡'}))">
+          </div>
+          <div class="label">game two<span class="tag">flash</span></div>
+        </a>
+
       </div>
 
-      <div class="sidebar">
-        <div class="scrollbar">
-          <div id="sidecontent">
+      <div id="heading">❀ disc games</div>
+      <div class="grid">
 
-            <div id="heading">❀ flash games</div>
-            <div id="sidebox">
-              <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="swf" data-title="50's Fashion Dress Up" data-src="dressup.swf">50's fashion dress up</a>
-              </div>
-            </div>
-            <div id="sidebox">
-              <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="swf" data-title="Game Two" data-src="game2.swf">game two</a>
-              </div>
-            </div>
-
-            <div id="heading">❀ disc games</div>
-            <div id="sidebox">
-              <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="iso" data-core="nds" data-title="Barbie 12 Dancing Princesses" data-src="barbie12.nds">Barbie 12 Princesses (3D)</a>
-              </div>
-            </div>
-            <div id="sidebox">
-              <div id="sideboxtext">&ensp;
-                <a class="game-link" data-type="iso" data-core="gba" data-title="Barbie Princess & Pauper" data-src="barbie_pauper.gba">Barbie Pauper (GBA)</a>
-              </div>
-            </div>
-
+        <a class="card" href="play.html?type=iso&core=nds&src=barbie12.nds&title=Barbie%2012%20Dancing%20Princesses">
+          <div class="thumb">
+            <img src="thumbs/barbie12.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'add thumbs/barbie12.png ♡'}))">
           </div>
-        </div>
+          <div class="label">Barbie 12 Dancing Princesses<span class="tag">nds</span></div>
+        </a>
+
+        <a class="card" href="play.html?type=iso&core=gba&src=barbie_pauper.gba&title=Barbie%20Princess%20%26%20Pauper">
+          <div class="thumb">
+            <img src="thumbs/barbie_pauper.png" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'add thumbs/barbie_pauper.png ♡'}))">
+          </div>
+          <div class="label">Barbie Princess &amp; Pauper<span class="tag">gba</span></div>
+        </a>
+
       </div>
 
     </div>
@@ -248,99 +217,6 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
 
   </div>
 </div>
-
-<script>
-window.RufflePlayer = window.RufflePlayer || {};
-let currentRufflePlayer = null;
-
-function clearFrame() {
-  const frame = document.getElementById("game-frame");
-  frame.innerHTML = "";
-  currentRufflePlayer = null;
-  return frame;
-}
-
-function loadSwf(src, title) {
-  const frame = clearFrame();
-
-  const ruffle = window.RufflePlayer.newest();
-  if (!ruffle) {
-    frame.innerHTML = '<div class="placeholder">ruffle failed to load — check your connection</div>';
-    return;
-  }
-
-  currentRufflePlayer = ruffle.createPlayer();
-  frame.appendChild(currentRufflePlayer);
-  currentRufflePlayer.load(src);
-
-  document.getElementById("np-hint").textContent = "";
-}
-
-function loadIso(src, core, title) {
-  const frame = clearFrame();
-
-  // Resolve to an absolute URL using the parent page as the base, so the
-  // iframe (which has no real URL of its own, since its document is built
-  // with document.write) can actually find and fetch the game file.
-  const absoluteSrc = new URL(src, document.baseURI).href;
-
-  const iframe = document.createElement("iframe");
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.style.border = "none";
-
-  iframe.setAttribute("allowfullscreen", "true");
-  iframe.setAttribute("allow", "autoplay; gamepad");
-  iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
-
-  frame.appendChild(iframe);
-
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write('<!DOCTYPE html><html><head><style>html,body,#ejs-target{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#111;}</style></head><body><div id="ejs-target"></div></body></html>');
-  doc.close();
-
-  iframe.contentWindow.EJS_player = '#ejs-target';
-  iframe.contentWindow.EJS_core = core;
-  iframe.contentWindow.EJS_gameUrl = absoluteSrc;
-  iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-  iframe.contentWindow.EJS_startOnLoaded = true;
-
-  const scr = doc.createElement('script');
-  scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-  doc.body.appendChild(scr);
-
-  document.getElementById("np-hint").textContent = "large file — first load may take a bit ♡";
-}
-
-function loadGame(link) {
-  const type = link.dataset.type;
-  const src = link.dataset.src;
-  const title = link.dataset.title;
-
-  if (type === "iso") {
-    loadIso(src, link.dataset.core, title);
-  } else {
-    loadSwf(src, title);
-  }
-
-  document.getElementById("np-title").textContent = title;
-  document.querySelectorAll(".game-link").forEach(el => el.classList.remove("active"));
-  link.classList.add("active");
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".game-link").forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      loadGame(link);
-    });
-  });
-
-  const first = document.querySelector(".game-link");
-  if (first) loadGame(first);
-});
-</script>
 
 </body>
 </html>
