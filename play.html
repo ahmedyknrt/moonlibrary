@@ -122,11 +122,6 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
   text-align: center;
 }
 
-/* Custom design integration directly inside EmulatorJS elements */
-#ejs-target, .emulator, #ejs-target canvas {
-  background-color: transparent !important;
-}
-
 #now-playing{
   background: white;
   border: #ae957f 1px dotted;
@@ -207,27 +202,28 @@ function loadSwf(src) {
   document.getElementById("np-hint").textContent = "";
 }
 
-// Fixed: Loads the emulator on the main window timeline to fix CORS/WASM security locks
 function loadIso(src, core) {
   const frame = clearFrame();
   const absoluteSrc = new URL(src, document.baseURI).href;
 
-  // Create target div directly inside game-frame
+  // Create a fresh clean container div on the main window timeline
   const target = document.createElement("div");
   target.id = "ejs-target";
   target.style.width = "100%";
   target.style.height = "100%";
   frame.appendChild(target);
 
-  // Set global configurations directly on the top window context
+  // Configure EmulatorJS parameters using its official config settings
   window.EJS_player = '#ejs-target';
   window.EJS_core = core;                
   window.EJS_gameUrl = absoluteSrc;
   window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   window.EJS_startOnLoaded = true;
-  window.EJS_background = 'transparent';
+  
+  // Sets the internal interface background color to match your layout design
+  window.EJS_backgroundColor = '#fff9f6';
 
-  // Inject loader script directly into main document
+  // Inject the script handler directly inside your game framework container safely
   const scr = document.createElement('script');
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
   frame.appendChild(scr);
