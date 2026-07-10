@@ -203,17 +203,21 @@ function loadSwf(src) {
   document.getElementById("np-hint").textContent = "";
 }
 
-// FIXED: Isolated configuration scope using clean srcdoc execution paths
 function loadIso(src, core) {
   const frame = clearFrame();
-  const absoluteSrc = new URL(src, document.baseURI).href;
+  
+  // Safety fallback for local file systems
+  if(window.location.protocol === 'file:') {
+     frame.innerHTML = '<div class="placeholder" style="color:red; padding:20px;">⚠️ Running locally via file:// is blocked by browsers. Please upload to GitHub Pages or use Live Server to test!</div>';
+     return;
+  }
 
+  const absoluteSrc = new URL(src, document.baseURI).href;
   const iframe = document.createElement("iframe");
   iframe.setAttribute("allowfullscreen", "true");
   iframe.setAttribute("allow", "autoplay; gamepad");
   iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
 
-  // Inlining the configuration scripts inside srcdoc makes the emulator engine boot perfectly every reload
   iframe.srcdoc = `
     <!DOCTYPE html>
     <html>
@@ -230,6 +234,11 @@ function loadIso(src, core) {
     <body>
       <div id="ejs-target"></div>
       <script type="text/javascript">
+        // Crash reporting integration
+        window.addEventListener('error', function(e) {
+          document.getElementById('ejs-target').innerHTML = "<div style='color:#ae957f; padding:30px; font-family:sans-serif; font-size:12px;'>Engine loader issue: " + e.message + "<br><br>Try disabling your browser adblocker/shields!</div>";
+        });
+
         window.EJS_player = '#ejs-target';
         window.EJS_core = '${core}';
         window.EJS_gameUrl = '${absoluteSrc}';
