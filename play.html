@@ -221,21 +221,24 @@ function loadIso(src, core) {
   const doc = iframe.contentWindow.document;
   doc.open();
   
-  // Custom styled document inside the iframe to hide white load times
+  // FIXED: Forced a transparent/styled canvas background into EmulatorJS's structural hierarchy 
   doc.write(`
     <!DOCTYPE html>
     <html>
     <head>
       <style>
-        html, body, #ejs-target { 
+        html, body, #ejs-target, .emulator { 
           margin: 0; 
           padding: 0; 
           width: 100%; 
           height: 100%; 
           overflow: hidden; 
-          background-color: #fff9f6;
-          background-image: radial-gradient(#ae957f 1px, transparent 1px);
-          background-size: 16px 16px;
+          background-color: #fff9f6 !important;
+          background-image: radial-gradient(#ae957f 1px, transparent 1px) !important;
+          background-size: 16px 16px !important;
+        }
+        canvas {
+          background-color: transparent !important;
         }
       </style>
     </head>
@@ -251,6 +254,9 @@ function loadIso(src, core) {
   iframe.contentWindow.EJS_gameUrl = absoluteSrc;
   iframe.contentWindow.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
   iframe.contentWindow.EJS_startOnLoaded = true;
+  
+  // FIXED: Tells EmulatorJS to explicitly target our background styling rules
+  iframe.contentWindow.EJS_background = 'transparent';
 
   const scr = doc.createElement('script');
   scr.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
