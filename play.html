@@ -233,22 +233,30 @@ function loadIso(src, core) {
     <body>
       <div id="ejs-target"></div>
       <script type="text/javascript">
-        // Un-mute and lock audio sample rate to prevent cracking/pitch issues
+        // Lock AudioContext sample rate and handle auto-resuming
+        let globalAudioCtx = null;
         (function() {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           if (AudioContext) {
             const originalAudioContext = AudioContext;
             window.AudioContext = function(options) {
               options = options || {};
-              // Most emulators sample at 44.1kHz or 48kHz cleanly
               options.sampleRate = 44100;
-              return new originalAudioContext(options);
+              options.latencyHint = 'interactive';
+              globalAudioCtx = new originalAudioContext(options);
+              return globalAudioCtx;
             };
             window.AudioContext.prototype = originalAudioContext.prototype;
           }
         })();
 
-        // Crash reporting integration
+        // Click-to-resume listener if browser suspends audio thread
+        window.addEventListener('click', function() {
+          if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+            globalAudioCtx.resume();
+          }
+        }, { once: false });
+
         window.addEventListener('error', function(e) {
           document.getElementById('ejs-target').innerHTML = "<div style='color:#ae957f; padding:30px; font-family:sans-serif; font-size:12px;'>Engine loader issue: " + e.message + "<br><br>Try disabling your browser adblocker/shields!</div>";
         });
@@ -260,11 +268,12 @@ function loadIso(src, core) {
         window.EJS_startOnLoaded = true;
         window.EJS_backgroundColor = '#fff9f6';
         
-        // AUDIO FIX CONFIGS:
+        // PERFORMANCE & AUDIO BUFFER TUNING:
         window.EJS_threads = false;
         window.EJS_disableDatabases = true;
         window.EJS_volume = 0.8;
-        window.EJS_defaultSoundMode = 1; // Direct Web Audio mode
+        window.EJS_bufferSize = 2048; // Increases audio safety buffer (prevents stuttering)
+        window.EJS_alignAudio = true;
       <\/script>
       <script type="text/javascript" src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>
     </body>
@@ -272,7 +281,7 @@ function loadIso(src, core) {
   `;
 
   frame.appendChild(iframe);
-  document.getElementById("np-hint").textContent = "large file — first load may take a bit, click once inside if sound is quiet ♡";
+  document.getElementById("np-hint").textContent = "large file — if audio stutters, click inside the game window to sync ♡";
 }
 
 window.addEventListener("DOMContentLoaded", () => {
