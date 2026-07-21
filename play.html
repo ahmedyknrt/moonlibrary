@@ -180,9 +180,7 @@ a:hover{ color: #a1ceed; letter-spacing: 3px; transition: 0.2s; }
 
 <script>
 window.RufflePlayer = window.RufflePlayer || {};
-window.EJS_threads = false;
-window.EJS_disableDatabases = true;
-  
+
 function clearFrame() {
   const frame = document.getElementById("game-frame");
   frame.innerHTML = "";
@@ -208,7 +206,6 @@ function loadSwf(src) {
 function loadIso(src, core) {
   const frame = clearFrame();
   
-  // Safety fallback for local file systems
   if(window.location.protocol === 'file:') {
      frame.innerHTML = '<div class="placeholder" style="color:red; padding:20px;">⚠️ Running locally via file:// is blocked by browsers. Please upload to GitHub Pages or use Live Server to test!</div>';
      return;
@@ -217,7 +214,7 @@ function loadIso(src, core) {
   const absoluteSrc = new URL(src, document.baseURI).href;
   const iframe = document.createElement("iframe");
   iframe.setAttribute("allowfullscreen", "true");
-  iframe.setAttribute("allow", "autoplay; gamepad");
+  iframe.setAttribute("allow", "autoplay; gamepad; audio");
   iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
 
   iframe.srcdoc = `
@@ -236,6 +233,21 @@ function loadIso(src, core) {
     <body>
       <div id="ejs-target"></div>
       <script type="text/javascript">
+        // Un-mute and lock audio sample rate to prevent cracking/pitch issues
+        (function() {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            const originalAudioContext = AudioContext;
+            window.AudioContext = function(options) {
+              options = options || {};
+              // Most emulators sample at 44.1kHz or 48kHz cleanly
+              options.sampleRate = 44100;
+              return new originalAudioContext(options);
+            };
+            window.AudioContext.prototype = originalAudioContext.prototype;
+          }
+        })();
+
         // Crash reporting integration
         window.addEventListener('error', function(e) {
           document.getElementById('ejs-target').innerHTML = "<div style='color:#ae957f; padding:30px; font-family:sans-serif; font-size:12px;'>Engine loader issue: " + e.message + "<br><br>Try disabling your browser adblocker/shields!</div>";
@@ -247,6 +259,12 @@ function loadIso(src, core) {
         window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
         window.EJS_startOnLoaded = true;
         window.EJS_backgroundColor = '#fff9f6';
+        
+        // AUDIO FIX CONFIGS:
+        window.EJS_threads = false;
+        window.EJS_disableDatabases = true;
+        window.EJS_volume = 0.8;
+        window.EJS_defaultSoundMode = 1; // Direct Web Audio mode
       <\/script>
       <script type="text/javascript" src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>
     </body>
@@ -254,7 +272,7 @@ function loadIso(src, core) {
   `;
 
   frame.appendChild(iframe);
-  document.getElementById("np-hint").textContent = "large file — first load may take a bit, use the on-screen or keyboard controls ♡";
+  document.getElementById("np-hint").textContent = "large file — first load may take a bit, click once inside if sound is quiet ♡";
 }
 
 window.addEventListener("DOMContentLoaded", () => {
